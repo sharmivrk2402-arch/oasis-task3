@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>task flow </title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:1000px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.3);
+    color:white;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.input-section{
+    display:flex;
+    gap:10px;
+    margin-bottom:25px;
+}
+
+.input-section input{
+    flex:1;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    outline:none;
+    font-size:16px;
+}
+
+.input-section button{
+    padding:15px 25px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#2563eb;
+    color:white;
+    font-weight:bold;
+}
+
+.task-container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.task-box{
+    background:rgba(255,255,255,0.08);
+    padding:20px;
+    border-radius:15px;
+}
+
+.task-box h2{
+    margin-bottom:15px;
+    text-align:center;
+}
+
+ul{
+    list-style:none;
+}
+
+li{
+    background:rgba(255,255,255,0.1);
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.task-text{
+    font-size:16px;
+    margin-bottom:8px;
+}
+
+.time{
+    font-size:12px;
+    opacity:0.8;
+    margin-bottom:10px;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+button.complete{
+    background:#22c55e;
+}
+
+button.edit{
+    background:#f59e0b;
+}
+
+button.delete{
+    background:#ef4444;
+}
+
+.actions button{
+    border:none;
+    padding:8px 12px;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.completed-task{
+    text-decoration:line-through;
+    opacity:0.7;
+}
+
+@media(max-width:768px){
+    .task-container{
+        grid-template-columns:1fr;
+    }
+
+    .input-section{
+        flex-direction:column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📝 Task Flow To Do List</h1>
+
+    <div class="input-section">
+        <input type="text" id="taskInput" placeholder="Enter a task...">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="task-container">
+
+        <div class="task-box">
+            <h2>⏳ Pending Tasks</h2>
+            <ul id="pendingTasks"></ul>
+        </div>
+
+        <div class="task-box">
+            <h2>✅ Completed Tasks</h2>
+            <ul id="completedTasks"></ul>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function addTask(){
+
+    const taskInput = document.getElementById("taskInput");
+    const taskText = taskInput.value.trim();
+
+    if(taskText === ""){
+        alert("Please enter a task!");
+        return;
+    }
+
+    const dateTime = new Date().toLocaleString();
+
+    const li = document.createElement("li");
+
+    li.innerHTML = `
+        <div class="task-text">${taskText}</div>
+        <div class="time">Added: ${dateTime}</div>
+
+        <div class="actions">
+            <button class="complete" onclick="completeTask(this)">Complete</button>
+            <button class="edit" onclick="editTask(this)">Edit</button>
+            <button class="delete" onclick="deleteTask(this)">Delete</button>
+        </div>
+    `;
+
+    document.getElementById("pendingTasks").appendChild(li);
+
+    taskInput.value="";
+}
+
+function completeTask(button){
+
+    const task = button.closest("li");
+
+    task.querySelector(".task-text")
+        .classList.add("completed-task");
+
+    const time = document.createElement("div");
+    time.className="time";
+    time.innerHTML="Completed: " + new Date().toLocaleString();
+
+    task.appendChild(time);
+
+    button.remove();
+
+    document.getElementById("completedTasks")
+        .appendChild(task);
+}
+
+function editTask(button){
+
+    const taskText =
+    button.closest("li").querySelector(".task-text");
+
+    const updatedTask =
+    prompt("Edit Task:", taskText.innerText);
+
+    if(updatedTask !== null && updatedTask.trim() !== ""){
+        taskText.innerText = updatedTask;
+    }
+}
+
+function deleteTask(button){
+    button.closest("li").remove();
+}
+
+</script>
+
+</body>
+</html>
